@@ -48,7 +48,7 @@ public class PrettySeekBar extends View{
         paint.setColor(outerCircleFillColor);
         canvas.drawCircle(viewWidthHalf, viewHeightHalf, outerCircleRadius, paint);
 
-        paint.setStyle(Paint.Style.FILL);
+        paint.setStyle(Paint.Style.STROKE);
         //paint.setColor(innerCircleFillColor);
         canvas.drawCircle(viewWidthHalf, viewHeightHalf, innerCircleRadius, paint);
     }
