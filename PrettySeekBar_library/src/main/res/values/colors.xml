@@ -4,6 +4,6 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
-    <color name="outer">#303F9F</color>
+    <color name="outer">#000000</color>
     <color name="inner">#FFFFFF</color>
 </resources>
