@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -15,11 +16,14 @@ import static com.avtechlabs.prettyseekbar.R.color.white;
  */
 
 public class PrettySeekBar extends View{
-    private int outerCircleFillColor, innerCircleFillColor;
+    private int outerCircleFillColor, innerCircleFillColor, progressColor;
     private int outerCircleRadius, innerCircleRadius;
     private int imageLeftPos, imageRightPos, imageTopPos, imageBottomPos;
     private TypedArray array;
     private Paint paint, outerCirclePainter, innerCirclePainter, progressPainter;
+    private float progressSweepAngle, progressStartAngle = 0f;
+    private int maxProgress;
+    private RectF rectF = new RectF();
     private int i = -1, radiusIncrementValue = 1;
     private Bitmap image = null;
 
@@ -57,6 +61,7 @@ public class PrettySeekBar extends View{
         try{
             outerCircleFillColor = array.getInteger(R.styleable.PrettySeekBar_outerCircleFillColor, R.color.outer);
             innerCircleFillColor = array.getInteger(R.styleable.PrettySeekBar_innerCircleFillColor, R.color.inner);
+            maxProgress = array.getInteger(R.styleable.PrettySeekBar_maxProgress, 100);
         }finally {
             array.recycle();
         }
@@ -79,18 +84,27 @@ public class PrettySeekBar extends View{
         progressPainter.setStrokeCap(Paint.Cap.BUTT);
         //progressPainter.setColor(getResources().getColor(R.color.white));
 
+        progressSweepAngle = 360 / maxProgress;
+
+
     }
 
     @Override
     protected void onDraw(Canvas canvas){
         int viewWidthHalf = this.getMeasuredWidth() / 2;
         int viewHeightHalf = this.getMeasuredHeight() / 2;
+        int min = Math.min(viewWidthHalf, viewHeightHalf);
 
         calculateRadius(viewWidthHalf, viewHeightHalf);
 
+        int diameter = min - getPaddingLeft();
+        rectF.set(viewWidthHalf, viewHeightHalf, viewWidthHalf, viewHeightHalf);
 
         canvas.drawCircle(viewWidthHalf, viewHeightHalf, outerCircleRadius, outerCirclePainter);
         canvas.drawCircle(viewWidthHalf, viewHeightHalf, innerCircleRadius, innerCirclePainter);
+        //canvas.drawArc(left, top, right, bottom, start, sweep, center, paint);
+        canvas.drawArc(rectF, progressStartAngle, progressSweepAngle, true, progressPainter);
+        incrementSweepAngle();
 
         if(image != null){
             canvas.drawBitmap(image, viewWidthHalf, viewHeightHalf, paint);
@@ -132,5 +146,14 @@ public class PrettySeekBar extends View{
 
     public void setImageResource(Bitmap image){
         this.image = image;
+    }
+
+    public void setMaxProgress(int maxProgress){
+        this.maxProgress = maxProgress;
+    }
+
+    private void incrementSweepAngle(){
+        progressStartAngle = progressStartAngle >= 360f ? 0f : progressStartAngle;
+        progressStartAngle += progressSweepAngle;
     }
 }
