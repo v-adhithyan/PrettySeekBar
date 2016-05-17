@@ -1,0 +1,7 @@
+<resources>
+    <declare-styleable name="PrettySeekBar">
+        <attr name="maxProgress" format="integer"/>
+        <attr name="outerCircleFillColor" format="color"/>
+        <attr name="innerCircleFillColor" format="color"/>
+    </declare-styleable>
+</resources>
