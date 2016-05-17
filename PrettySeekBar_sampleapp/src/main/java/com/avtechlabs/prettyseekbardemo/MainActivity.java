@@ -1,5 +1,10 @@
 package com.avtechlabs.prettyseekbardemo;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,8 +13,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
+
+    MediaPlayer player;
+    FloatingActionButton fab;
+    MediaMetadataRetriever songMetaData;
+    Uri mediapath;
+    byte[] albumArt;
+    TextView songName, songDuration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,14 +33,19 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        songName = (TextView)findViewById(R.id.textViewSongName);
+        songDuration = (TextView)findViewById(R.id.textViewDuration);
+
+        mediapath = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.gangnam);
+        songMetaData = new MediaMetadataRetriever();
+        songMetaData.setDataSource(this, mediapath);
+        songName.setText(songMetaData.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE));
+        albumArt = songMetaData.getEmbeddedPicture();
+        Bitmap songImage = BitmapFactory.decodeByteArray(albumArt, 0, albumArt.length);
+
+        player = MediaPlayer.create(this, R.raw.gangnam);
+
     }
 
     @Override
@@ -48,5 +68,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void playback(View v){
+        if(player.isPlaying()){
+            player.pause();
+            fab.setImageResource(android.R.drawable.ic_media_play);
+
+
+
+        }else{
+            player.start();
+            fab.setImageResource(android.R.drawable.ic_media_pause);
+        }
     }
 }
