@@ -6,4 +6,5 @@
 
     <color name="outer">#000000</color>
     <color name="inner">#FFFFFF</color>
+    <color name="white">#FFFFFF</color>
 </resources>

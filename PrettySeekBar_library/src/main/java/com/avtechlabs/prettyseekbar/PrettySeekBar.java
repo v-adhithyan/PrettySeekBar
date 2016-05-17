@@ -2,10 +2,13 @@ package com.avtechlabs.prettyseekbar;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
+
+import static com.avtechlabs.prettyseekbar.R.color.white;
 
 /**
  * Created by adhithyan-3592 on 17/05/16.
@@ -14,9 +17,11 @@ import android.view.View;
 public class PrettySeekBar extends View{
     private int outerCircleFillColor, innerCircleFillColor;
     private int outerCircleRadius, innerCircleRadius;
+    private int imageLeftPos, imageRightPos, imageTopPos, imageBottomPos;
     private TypedArray array;
-    private Paint paint;
+    private Paint paint, outerCirclePainter, innerCirclePainter, progressPainter;
     private int i = -1, radiusIncrementValue = 1;
+    private Bitmap image = null;
 
 
     public interface  OnPrettySeekBarChangeListener{
@@ -47,8 +52,6 @@ public class PrettySeekBar extends View{
     }
 
     private void init(Context context, AttributeSet attrs){
-        paint = new Paint();
-
         array = context.getTheme().obtainStyledAttributes(attrs, R.styleable.PrettySeekBar, 0, 0);
 
         try{
@@ -57,6 +60,25 @@ public class PrettySeekBar extends View{
         }finally {
             array.recycle();
         }
+
+        paint = new Paint();
+
+        outerCirclePainter = new Paint();
+        outerCirclePainter.setStyle(Paint.Style.FILL);
+        outerCirclePainter.setAntiAlias(true);
+        outerCirclePainter.setColor(outerCircleFillColor);
+
+        innerCirclePainter = new Paint();
+        innerCirclePainter.setStyle(Paint.Style.FILL);
+        innerCirclePainter.setAntiAlias(true);
+        innerCirclePainter.setColor(innerCircleFillColor);
+
+        progressPainter = new Paint();
+        progressPainter.setStyle(Paint.Style.STROKE);
+        progressPainter.setAntiAlias(true);
+        progressPainter.setStrokeCap(Paint.Cap.BUTT);
+        //progressPainter.setColor(getResources().getColor(R.color.white));
+
     }
 
     @Override
@@ -66,15 +88,14 @@ public class PrettySeekBar extends View{
 
         calculateRadius(viewWidthHalf, viewHeightHalf);
 
-        paint.setAntiAlias(true);
 
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(outerCircleFillColor);
-        canvas.drawCircle(viewWidthHalf, viewHeightHalf, outerCircleRadius, paint);
-        
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(innerCircleFillColor);
-        canvas.drawCircle(viewWidthHalf, viewHeightHalf, innerCircleRadius, paint);
+        canvas.drawCircle(viewWidthHalf, viewHeightHalf, outerCircleRadius, outerCirclePainter);
+        canvas.drawCircle(viewWidthHalf, viewHeightHalf, innerCircleRadius, innerCirclePainter);
+
+        if(image != null){
+            canvas.drawBitmap(image, viewWidthHalf, viewHeightHalf, paint);
+        }
+
 
     }
 
@@ -84,6 +105,10 @@ public class PrettySeekBar extends View{
             outerCircleRadius = (viewWidthHalf > viewHeightHalf) ? (viewHeightHalf / 2) : (viewWidthHalf / 2);
             innerCircleRadius = (int) (outerCircleRadius * 0.8);
 
+            //int length = (int) (innerCircleRadius * 3.14 * 2);
+            //imageLeftPos = imageTopPos = length;
+
+            //imageBottomPos = length + length;
             i++;
         }else{
 
@@ -105,7 +130,7 @@ public class PrettySeekBar extends View{
 
     }
 
-    public void setImageResource(){
-
+    public void setImageResource(Bitmap image){
+        this.image = image;
     }
 }

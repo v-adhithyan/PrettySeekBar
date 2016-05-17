@@ -15,6 +15,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.avtechlabs.prettyseekbar.PrettySeekBar;
+
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     Uri mediapath;
     byte[] albumArt;
     TextView songName, songDuration;
+    PrettySeekBar prettySeekBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         fab = (FloatingActionButton) findViewById(R.id.fab);
         songName = (TextView)findViewById(R.id.textViewSongName);
         songDuration = (TextView)findViewById(R.id.textViewDuration);
+        prettySeekBar = (PrettySeekBar)findViewById(R.id.prettySeekBar);
 
         mediapath = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.gangnam);
         songMetaData = new MediaMetadataRetriever();
@@ -43,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         songName.setText(songMetaData.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE));
         albumArt = songMetaData.getEmbeddedPicture();
         Bitmap songImage = BitmapFactory.decodeByteArray(albumArt, 0, albumArt.length);
+        //prettySeekBar.setImageResource(songImage);
 
         player = MediaPlayer.create(this, R.raw.gangnam);
 
