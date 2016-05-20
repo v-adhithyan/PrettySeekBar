@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.avtechlabs.prettyseekbar.PrettySeekBar;
 
@@ -28,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
     byte[] albumArt;
     TextView songName, songDuration;
     PrettySeekBar prettySeekBar;
+    int duration;
+    boolean update, playing = false;
+    Thread progressThread = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
         songName = (TextView)findViewById(R.id.textViewSongName);
         songDuration = (TextView)findViewById(R.id.textViewDuration);
         prettySeekBar = (PrettySeekBar)findViewById(R.id.prettySeekBar);
+        player = MediaPlayer.create(this, R.raw.gangnam);
+        //Toast.makeText(this, player.getDuration() + "", Toast.LENGTH_LONG).show();
+        prettySeekBar.setMaxProgress(player.getDuration() / 1000);
 
         mediapath = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.gangnam);
         songMetaData = new MediaMetadataRetriever();
@@ -49,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
         Bitmap songImage = BitmapFactory.decodeByteArray(albumArt, 0, albumArt.length);
         //prettySeekBar.setImageResource(songImage);
 
-        player = MediaPlayer.create(this, R.raw.gangnam);
 
     }
 
@@ -80,11 +86,67 @@ public class MainActivity extends AppCompatActivity {
             player.pause();
             fab.setImageResource(android.R.drawable.ic_media_play);
 
-
+            prettySeekBar.pauseProgress();
+            playing = false;
 
         }else{
             player.start();
             fab.setImageResource(android.R.drawable.ic_media_pause);
+            playing = true;
+
+            if(progressThread == null){
+                progressThread = new Thread(new ProgressUpdater(player.getDuration()));
+                progressThread.start();
+            }
+            prettySeekBar.makeProgress();
+
         }
     }
+
+    public void updateDuration(int durationInSeconds){
+        this.update = update;
+
+        final int minutes = durationInSeconds / 60;
+        final int seconds = durationInSeconds % 60;
+
+        final String preMinutes, preSeconds;
+
+        preMinutes = (minutes < 10) ? "0" : "";
+        preSeconds = (seconds < 10) ? "0" : "";
+
+        runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                  songDuration.setText(preMinutes + minutes + ":" + preSeconds + seconds);
+                }
+        });
+
+    }
+
+    class ProgressUpdater implements Runnable{
+        int duration;
+
+        public ProgressUpdater(int duration){
+            this.duration = duration;
+        }
+
+        @Override
+        public void run() {
+            for(int i=0; i<duration; i++){
+
+                try {
+                    while(!playing)
+                        Thread.sleep(1000);
+
+                updateDuration(i);
+                Thread.sleep(1000);
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+    }
+
 }

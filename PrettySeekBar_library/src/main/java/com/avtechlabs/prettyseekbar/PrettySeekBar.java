@@ -11,6 +11,7 @@ import android.view.View;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.avtechlabs.prettyseekbar.R.color.white;
 
@@ -25,14 +26,19 @@ public class PrettySeekBar extends View{
     private TypedArray array;
     private Paint paint, outerCirclePainter, innerCirclePainter, progressPainter;
     private float progressSweepAngle, progressStartAngle = 0f;
-    private int maxProgress;
+    private int maxProgress = 0;
     private RectF rectF = new RectF();
     private int i = -1, radiusIncrementValue = 1;
     private Bitmap image = null;
-
+    AtomicBoolean makeProgress = new AtomicBoolean(false);
+    int makeProgressTime = 1000;
+    boolean userSetProgress = false;
+    public int ms = 0;
     private int[] x;
     private int[] y;
     private int point = 0;
+
+    private boolean pause = true;
 
 
     public interface  OnPrettySeekBarChangeListener{
@@ -47,19 +53,40 @@ public class PrettySeekBar extends View{
         super(context, attrs);
         init(context, attrs);
 
-        new Thread(new Runnable() {
+
+
+        Thread animationThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 while(true){
                     try {
-                        Thread.sleep(150);
+                        Thread.sleep(200);
                         postInvalidate();
+
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
             }
-        }).start();
+        });
+
+        Thread progressUpdaterThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true){
+                    try {
+                        Thread.sleep(makeProgressTime);
+                        makeProgress.set(true);
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        animationThread.start();
+        progressUpdaterThread.start();
     }
 
     private void init(Context context, AttributeSet attrs){
@@ -99,32 +126,35 @@ public class PrettySeekBar extends View{
 
         //calculateRadius(this.getMeasuredWidth()/2, this.getMeasuredHeight()/2);
         //calculatePointsOnCircle();
+
     }
 
     @Override
     protected void onDraw(Canvas canvas){
-        int viewWidthHalf = this.getMeasuredWidth() / 2;
-        int viewHeightHalf = this.getMeasuredHeight() / 2;
-        int min = Math.min(viewWidthHalf, viewHeightHalf);
+            int viewWidthHalf = this.getMeasuredWidth() / 2;
+            int viewHeightHalf = this.getMeasuredHeight() / 2;
+            int min = Math.min(viewWidthHalf, viewHeightHalf);
 
-        calculateRadius(viewWidthHalf, viewHeightHalf);
+            calculateRadius(viewWidthHalf, viewHeightHalf);
 
-        int diameter = min - getPaddingLeft();
-        rectF.set(viewWidthHalf, viewHeightHalf, (int)(2 * 3.14 * (outerCircleRadius)), (int)(2 * 3.14 * innerCircleRadius));
+            int diameter = min - getPaddingLeft();
+            rectF.set(viewWidthHalf, viewHeightHalf, (int)(2 * 3.14 * (outerCircleRadius)), (int)(2 * 3.14 * innerCircleRadius));
 
-        canvas.drawCircle(viewWidthHalf, viewHeightHalf, outerCircleRadius, outerCirclePainter);
-        canvas.drawCircle(viewWidthHalf, viewHeightHalf, innerCircleRadius, innerCirclePainter);
-        //canvas.drawArc(left, top, right, bottom, start, sweep, center, paint);
+            canvas.drawCircle(viewWidthHalf, viewHeightHalf, outerCircleRadius, outerCirclePainter);
+            canvas.drawCircle(viewWidthHalf, viewHeightHalf, innerCircleRadius, innerCirclePainter);
+            //canvas.drawArc(left, top, right, bottom, start, sweep, center, paint);
 
-        canvas.drawLine(viewWidthHalf, viewHeightHalf, x[point],   y[point], progressPainter);
-        point = (point + 1 == 360) ? 0 : point + 1;
-        //incrementSweepAngle();
+            if(makeProgress.get() == true && !pause){
+                point = (point + 1 == 360) ? 0 : point + 1;
+                makeProgress.set(false);
+            }
+            canvas.drawLine(viewWidthHalf, viewHeightHalf, x[point],   y[point], progressPainter);
 
-        if(image != null){
-            canvas.drawBitmap(image, viewWidthHalf, viewHeightHalf, paint);
-        }
+            //incrementSweepAngle();
 
-
+            if(image != null) {
+                canvas.drawBitmap(image, viewWidthHalf, viewHeightHalf, paint);
+            }
     }
 
     private void calculateRadius(int viewWidthHalf, int viewHeightHalf){
@@ -164,9 +194,12 @@ public class PrettySeekBar extends View{
         this.image = image;
     }
 
+
     public void setMaxProgress(int maxProgress){
         this.maxProgress = maxProgress;
+        makeProgressTime = (360 / maxProgress) * 1000;
     }
+
 
     private void incrementSweepAngle(){
         progressStartAngle += progressSweepAngle;
@@ -183,4 +216,14 @@ public class PrettySeekBar extends View{
             angle += 1d;
         }
     }
+
+    public void pauseProgress(){
+        pause = true;
+    }
+
+    public void makeProgress(){
+        pause = false;
+    }
+
+
 }
