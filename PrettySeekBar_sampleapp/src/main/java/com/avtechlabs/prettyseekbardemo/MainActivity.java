@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         songDuration = (TextView)findViewById(R.id.textViewDuration);
         prettySeekBar = (PrettySeekBar)findViewById(R.id.prettySeekBar);
         player = MediaPlayer.create(this, R.raw.gangnam);
-        //Toast.makeText(this, player.getDuration() + "", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, player.getDuration() / 1000 + "", Toast.LENGTH_LONG).show();
         prettySeekBar.setMaxProgress(player.getDuration() / 1000);
 
         mediapath = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.gangnam);

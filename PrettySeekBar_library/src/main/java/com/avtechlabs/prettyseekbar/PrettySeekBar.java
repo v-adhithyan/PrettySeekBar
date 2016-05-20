@@ -32,6 +32,7 @@ public class PrettySeekBar extends View{
     private Bitmap image = null;
     AtomicBoolean makeProgress = new AtomicBoolean(false);
     int makeProgressTime = 1000;
+    private int currentProgress;
     boolean userSetProgress = false;
     public int ms = 0;
     private int[] x;
@@ -76,7 +77,17 @@ public class PrettySeekBar extends View{
                 while(true){
                     try {
                         Thread.sleep(makeProgressTime);
-                        makeProgress.set(true);
+
+                        if(currentProgress < maxProgress){
+                            if(!pause){
+                                makeProgress.set(true);
+                                currentProgress++;
+                            }
+
+                        }else{
+                            break;
+                        }
+
 
                     } catch (InterruptedException e) {
                         e.printStackTrace();
