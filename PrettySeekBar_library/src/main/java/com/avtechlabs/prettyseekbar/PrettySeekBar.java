@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import java.util.LinkedList;
@@ -20,23 +21,35 @@ import static com.avtechlabs.prettyseekbar.R.color.white;
  */
 
 public class PrettySeekBar extends View{
-    private int outerCircleFillColor, innerCircleFillColor, progressColor;
+    //the colors of outer circle and inner circle
+    private int outerCircleFillColor, innerCircleFillColor;
+
+    //the radius of outer circle and inner circle
     private int outerCircleRadius, innerCircleRadius;
-    private int imageLeftPos, imageRightPos, imageTopPos, imageBottomPos;
+
     private TypedArray array;
+
+    //objects that draw on screen
     private Paint paint, outerCirclePainter, innerCirclePainter, progressPainter;
-    private float progressSweepAngle, progressStartAngle = 0f;
-    private int maxProgress = 0;
+
+    private float progressSweepAngle, progressStartAngle;
+
+    //maximum progress
+    private int maxProgress = 100;
     private RectF rectF = new RectF();
+
     private int i = -1, radiusIncrementValue = 1;
     private Bitmap image = null;
     AtomicBoolean makeProgress = new AtomicBoolean(false);
-    int makeProgressTime = 1000;
+    int makeProgressTime = (int)(((double)maxProgress/(double)360) * 1000);
     private int currentProgress;
-    boolean userSetProgress = false;
     public int ms = 0;
+
+    //variables to store points on the circle, assuming 360 points in circle.
     private int[] x;
     private int[] y;
+
+    //variable to keep track of current angle
     private int point = 0;
 
     private boolean pause = true;
@@ -54,7 +67,9 @@ public class PrettySeekBar extends View{
         super(context, attrs);
         init(context, attrs);
 
-
+        /**
+         *  The zoom in and zoom out effect of circle is achieved by this thread.
+         */
 
         Thread animationThread = new Thread(new Runnable() {
             @Override
@@ -71,14 +86,22 @@ public class PrettySeekBar extends View{
             }
         });
 
+        /**
+         *  This thread sleeps before incrementing the progress hand.
+         */
+
+
         Thread progressUpdaterThread = new Thread(new Runnable() {
             @Override
             public void run() {
+                Log.d("Adhithyan", "maxprogress:" + maxProgress);
                 while(true){
                     try {
                         Thread.sleep(makeProgressTime);
 
-                        if(currentProgress < maxProgress){
+                        Log.d("Adhithyan", "maxprogress:" + maxProgress);
+                        Log.d("Adhithyan", "currentProgress:" + currentProgress);
+                        if(currentProgress < 360){
                             if(!pause){
                                 makeProgress.set(true);
                                 currentProgress++;
@@ -158,6 +181,7 @@ public class PrettySeekBar extends View{
             if(makeProgress.get() == true && !pause){
                 point = (point + 1 == 360) ? 0 : point + 1;
                 makeProgress.set(false);
+                Log.d("Adhithyan", "point:" + point);
             }
             canvas.drawLine(viewWidthHalf, viewHeightHalf, x[point],   y[point], progressPainter);
 
@@ -206,9 +230,15 @@ public class PrettySeekBar extends View{
     }
 
 
-    public void setMaxProgress(int maxProgress){
+    public int setMaxProgress(int maxProgress){
         this.maxProgress = maxProgress;
-        makeProgressTime = (360 / maxProgress) * 1000;
+        double time = ((double)maxProgress / (double)360) * 1000;
+
+        currentProgress = 0;
+        Log.d("Adhithyan", time + " tiem");
+        makeProgressTime = (int)time;
+        Log.d("Adhithyan", "makeprogess:" + makeProgressTime);
+        return makeProgressTime;
     }
 
 
