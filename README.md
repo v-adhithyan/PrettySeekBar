@@ -1,4 +1,5 @@
-# PrettySeekBar
+# PrettySeekBar [![](https://jitpack.io/v/v-adhithyan/PrettySeekBar.svg)](https://jitpack.io/#v-adhithyan/PrettySeekBar)
+
 
 Beautiful circular seekbar library for android.
 
