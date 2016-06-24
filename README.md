@@ -11,7 +11,7 @@ Beautiful circular seekbar library for android.
 
 # Sample
 
-<img src="https://raw.githubusercontent.com/v-adhithyan/PrettySeekBar/master/screen-capture/screen-recording.gif" width="500" height="750" align="center"/>
+<img src="https://raw.githubusercontent.com/v-adhithyan/PrettySeekBar/master/screen-capture/screen-recording.gif"/>
 
 # Table of contents
 
