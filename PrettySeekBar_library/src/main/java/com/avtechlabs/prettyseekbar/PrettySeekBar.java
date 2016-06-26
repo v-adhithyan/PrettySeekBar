@@ -11,13 +11,9 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.avtechlabs.prettyseekbar.R.color.white;
 
 /**
  * Created by adhithyan-3592 on 17/05/16.
@@ -35,8 +31,6 @@ public class PrettySeekBar extends View{
     //objects that draw on screen
     private Paint paint, outerCirclePainter, innerCirclePainter, progressPainter;
 
-    private float progressSweepAngle, progressStartAngle;
-
     //maximum progress
     private int maxProgress = 100;
     private RectF rectF = new RectF();
@@ -46,7 +40,6 @@ public class PrettySeekBar extends View{
     AtomicBoolean makeProgress = new AtomicBoolean(false);
     int makeProgressTime = (int)(((double)maxProgress/(double)360) * 1000);
     private int currentProgress;
-    public int ms = 0;
 
     //variables to store points on the circle, assuming 360 points in circle.
     private int[] x;
@@ -56,22 +49,11 @@ public class PrettySeekBar extends View{
     //variable to keep track of current angle
     private int point = 270;
 
-    private int startAngle = 270;
-
-    private int rotation = 270;
-
     private boolean pause = true;
 
     public boolean mEnabled = true;
 
-    private int mTranslateX, mTranslateY, startX = 0, startY = 0;
-
-    private double touchAngle;
-
     private OnPrettySeekBarChangeListener onPrettySeekBarChangeListener;
-    private int xoriginCurrent = 0, yoriginCurrent = 0;
-
-    private static int INVALID_PROGRESS_VALUE = -1;
 
     int circleMaxX = Integer.MIN_VALUE, circleMaxY = Integer.MIN_VALUE, circleMinX = Integer.MAX_VALUE, circleMinY = Integer.MAX_VALUE;
 
@@ -118,13 +100,11 @@ public class PrettySeekBar extends View{
         Thread progressUpdaterThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                //Log.d("Adhithyan", "maxprogress:" + maxProgress);
                 while(true){
                     try {
                         Thread.sleep(makeProgressTime);
 
-                        //Log.d("Adhithyan", "maxprogress:" + maxProgress);
-                        //Log.d("Adhithyan", "currentProgress:" + currentProgress);
+
                         if(currentProgress < 360){
                             if(!pause){
                                 makeProgress.set(true);
@@ -177,28 +157,13 @@ public class PrettySeekBar extends View{
         progressPainter.setStrokeWidth(10);
         progressPainter.setColor(outerCircleFillColor);
 
-        progressSweepAngle = 360 / maxProgress;
-
         x = new int[360];
         y = new int[360];
-
-
-        //calculateRadius(this.getMeasuredWidth()/2, this.getMeasuredHeight()/2);
-        //calculatePointsOnCircle();
 
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec){
-        final int height = getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec);
-        final int width = getDefaultSize(getSuggestedMinimumHeight(), widthMeasureSpec);
-        final int min = Math.min(width, height);
-        float top = 0;
-        float left = 0;
-
-        mTranslateX = (int)(width * 0.5f);
-        mTranslateY = (int)(width * 0.5f);
-
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
@@ -206,25 +171,20 @@ public class PrettySeekBar extends View{
     protected void onDraw(Canvas canvas){
             int viewWidthHalf = this.getMeasuredWidth() / 2;
             int viewHeightHalf = this.getMeasuredHeight() / 2;
-            int min = Math.min(viewWidthHalf, viewHeightHalf);
 
             calculateRadius(viewWidthHalf, viewHeightHalf);
 
-            int diameter = min - getPaddingLeft();
             rectF.set(viewWidthHalf, viewHeightHalf, (int) (2 * 3.14 * (outerCircleRadius)), (int) (2 * 3.14 * innerCircleRadius));
 
             canvas.drawCircle(viewWidthHalf, viewHeightHalf, outerCircleRadius, outerCirclePainter);
             canvas.drawCircle(viewWidthHalf, viewHeightHalf, innerCircleRadius, innerCirclePainter);
-            //canvas.drawArc(left, top, right, bottom, start, sweep, center, paint);
 
-            if(makeProgress.get() == true && !pause){
+            if(makeProgress.get() && !pause){
                 point = (point + 1 == 360) ? 0 : point + 1;
                 makeProgress.set(false);
-                //Log.d("Adhithyan", "point:" + point);
             }
             canvas.drawLine(viewWidthHalf, viewHeightHalf, x[point],   y[point], progressPainter);
 
-            //incrementSweepAngle();
 
             if(image != null) {
                 canvas.drawBitmap(image, viewWidthHalf, viewHeightHalf, paint);
@@ -264,30 +224,16 @@ public class PrettySeekBar extends View{
 
     }
 
-    public void setImageResource(Bitmap image){
-        this.image = image;
-    }
-
-
     public int setMaxProgress(int maxProgress){
         this.maxProgress = maxProgress;
         double time = ((double)maxProgress / (double)360) * 1000;
 
         currentProgress = 0;
-        //Log.d("Adhithyan", time + " tiem");
         makeProgressTime = (int)time;
-        //Log.d("Adhithyan", "makeprogess:" + makeProgressTime);
         return makeProgressTime;
     }
 
-
-    private void incrementSweepAngle(){
-        progressStartAngle += progressSweepAngle;
-    }
-
     private void calculatePointsOnCircle(int xorigin, int yorigin){
-        xoriginCurrent = xorigin;
-        yoriginCurrent = yorigin;
         double angle = 0d;
 
 
@@ -353,24 +299,19 @@ public class PrettySeekBar extends View{
     }
 
     private void onStopTrackingTouch(){
-        //Log.d("Adhithayn", "start tracking touch");
         if(onPrettySeekBarChangeListener != null){
             onPrettySeekBarChangeListener.onStopTrackingTouch(this);
         }
     }
 
     private void updateOnTouch(MotionEvent event){
-        //Log.d("Adhithayn", "update on touch");
         boolean ignoreTouch = ignoreTouch(event.getX(), event.getY());
-        Log.d("Adhithyan", ignoreTouch + " ignoretouch");
         if(ignoreTouch){
             return;
         }
         setPressed(true);
-        touchAngle = getTouchDegrees(event.getX(), event.getY());
 
-        Log.d("Adhithyan", "touch angle:" + touchAngle);
-        onProgressRefresh((int)(touchAngle), true);
+        updateProgress(event.getX(), event.getY());
 
     }
 
@@ -385,93 +326,22 @@ public class PrettySeekBar extends View{
         return true;
     }
 
-    private double getTouchDegrees(float xPos, float yPos){
+    private void updateProgress(float xPos, float yPos){
         pauseZoom = true;
-        /*float x = xPos - mTranslateX;
-        float y = yPos - mTranslateY;
-
-        double angle = Math.toDegrees(Math.atan2(y, x) + (Math.PI / 2) - Math.toRadians(rotation));
-
-        if(angle < 0){
-            angle = angle + 360;
-        }
-
-        angle -= startAngle;*/
-
-        Log.d("Adhithyan", "x:" + xPos);
-        Log.d("Adhithyan", "y:" + yPos);
-        /*Log.d("Adhithyan", "min x:" + circleMinX);
-        Log.d("Adhithyan", "min y:" + circleMinY);
-        Log.d("Adhithyan", "max x:" + circleMaxX);
-        Log.d("Adhithyan", "max y:" + circleMaxY);
-        Log.d("Adhithyan", "point:" + point);
-        int diffx = (calculatePointXOnCircle(1) - calculatePointXOnCircle(0));
-        int diffy = (calculatePointYOnCircle(1) - calculatePointYOnCircle(0));
-        int startx = calculatePointXOnCircle(0);
-        int starty = calculatePointYOnCircle(0);
-        Log.d("Adhithyan", "start x:" + startx);
-        Log.d("Adhithyan", "start y:" + starty);
-        Log.d("Adhithyan", "diff x:" + diffx);
-        Log.d("Adhithyan", "diff y:" + diffy);
-        int getx = (int) (xPos - startx)/diffx;
-        int gety = (int) (yPos - starty)/diffy;
-        Log.d("Adhithyan", "get x:" + getx);
-        Log.d("Adhithyan", "get y:" + gety);*/
 
         for(int i=0; i<360; i++){
             int xdiff = Math.abs((int)(x[i] - xPos));
             int ydiff = Math.abs((int)(y[i] - yPos));
             if(xdiff <= 10 && ydiff <= 10) {
-                Log.d("Adhithyan", "found " + i);
                 point = i;
                 currentProgress = i;
-                if(makeProgress.get() == false)
+                if(!makeProgress.get())
                     makeProgress.set(true);
-                //pauseZoom = false;
                 invalidate();
                 break;
 
-            }else{
-                Log.d("Adhithyan", "not found");
             }
         }
-            //}
-            /*if(x[i] == (int)xPos){
-                point = i;
-                Log.d("Adhithyan", "xpoint" +  x[i]);
-                Log.d("Adhithyan", "ypoint" +  y[i]);
-                Log.d("Adhithyan", "point" +  i);
-                invalidate();
-                break;
-            }*/
-
-        return 0d;
-    }
-
-    private int getProgressForAngle(double angle){
-        int touchProgress = (int) Math.round(angle);
-
-        touchProgress = (touchProgress < 0) ? INVALID_PROGRESS_VALUE : touchProgress;
-        touchProgress = (touchProgress > 360) ? INVALID_PROGRESS_VALUE : touchProgress;
-
-        //Log.d("Adhithayn", "tocuh progress for angle:" + touchProgress);
-        return touchProgress;
-    }
-
-    private void onProgressRefresh(int angle, boolean fromUser){
-        //updateProgress(angle, fromUser);
-    }
-
-    private void updateProgress(int angle, boolean fromUser){
-        if(onPrettySeekBarChangeListener != null){
-            onPrettySeekBarChangeListener.onProgressChanged(this, angle, fromUser);
-        }
-
-        angle = (angle < 0) ? -angle : angle;
-        point = angle;
-
-        //Log.d("Adhithayn", "update progress for angle:" + point);
-        //invalidate();
     }
 
     private void setPointRange(int x, int y){
@@ -482,12 +352,4 @@ public class PrettySeekBar extends View{
         circleMinY = Math.min(y, circleMinY);
     }
 
-    private int calculatePointXOnCircle(int angle){
-        return (int) ((xoriginCurrent) + (outerCircleRadius * Math.cos(angle * Math.PI / 180)));
-
-    }
-
-    private int calculatePointYOnCircle(int angle){
-        return (int) ((yoriginCurrent) + (outerCircleRadius * Math.sin(angle * Math.PI / 180)));
-    }
 }
