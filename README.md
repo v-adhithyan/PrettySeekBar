@@ -7,16 +7,57 @@
 
 
 
-Beautiful circular seekbar library for android.
+Beautiful circular seekbar library for android, inspired by analog clock. It can be used for stopwatches and audio players. Free and Open source.
 
 # Sample
-
-<img src="https://raw.githubusercontent.com/v-adhithyan/PrettySeekBar/master/screen-capture/screen-recording.gif"/>
 
 # Table of contents
 
 * [Usage](#usage)
 * [License](#license)
+
+# Usage
+This library is currently available only via jitpack. To add this library to your project, do the following changes: <br>
+
+<b>Step 1:</b> Add it in your root build.gradle at the end of repositories.
+```
+allprojects {
+	 repositories {
+	   ...
+    maven { url "https://jitpack.io" }
+  }
+}
+```
+<br>
+
+<b>Step 2:</b> Add the dependency.
+```
+dependencies{
+ ...
+ compile 'com.github.v-adhithyan:PrettySeekBar:v1.0'
+}
+```
+<br>
+
+<b>Step 3:</b> Sync project with gradle files. <br>
+
+<b>Step 4:</b> In your layout file, add the following changes
+  Add the namespace to the layout's parent. For example if your layout's parent is RelativeLayout add the following line within that. <br>
+  ```
+    xmlns:pretty="http://schemas.android.com/apk/res-auto"
+  ```
+  <br>
+  
+  Now add the following code:
+  ```
+  <com.avtechlabs.prettyseekbar.PrettySeekBar
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        pretty:outerCircleFillColor="replace with the color you want"
+        pretty:innerCircleFillColor="replace with the color you want"
+  />
+  ```<br>
+Voila, PrettySeekBar is now added to your project.
 
 # License
 
