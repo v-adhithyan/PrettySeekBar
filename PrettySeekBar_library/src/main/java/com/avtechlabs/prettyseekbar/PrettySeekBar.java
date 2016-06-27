@@ -93,7 +93,7 @@ public class PrettySeekBar extends View{
         });
 
         /**
-         *  This thread sleeps before incrementing the progress hand.
+         *  The clock like animation is achieved by this thread.
          */
 
 
@@ -183,7 +183,7 @@ public class PrettySeekBar extends View{
                 point = (point + 1 == 360) ? 0 : point + 1;
                 makeProgress.set(false);
             }
-            canvas.drawLine(viewWidthHalf, viewHeightHalf, x[point],   y[point], progressPainter);
+            canvas.drawLine(viewWidthHalf, viewHeightHalf, x[point], y[point], progressPainter);
 
 
             if(image != null) {
@@ -196,11 +196,6 @@ public class PrettySeekBar extends View{
         if(i == -1){
             outerCircleRadius = (viewWidthHalf > viewHeightHalf) ? (viewHeightHalf / 2) : (viewWidthHalf / 2);
             innerCircleRadius = (int) (outerCircleRadius * 0.8);
-
-            //int length = (int) (innerCircleRadius * 3.14 * 2);
-            //imageLeftPos = imageTopPos = length;
-
-            //imageBottomPos = length + length;
             i++;
         }else{
 
@@ -267,7 +262,8 @@ public class PrettySeekBar extends View{
                     updateOnTouch(event);
                     break;*/
                 case MotionEvent.ACTION_MOVE:
-                    Log.d("Adhithyan", "move");
+                    //Log.d("Adhithyan", "move");
+                    onStartTrackingTouch();
                     updateOnTouch(event);
                     break;
                 /*case MotionEvent.ACTION_UP:
@@ -275,13 +271,13 @@ public class PrettySeekBar extends View{
                     onStopTrackingTouch();
                     setPressed(false);
                     this.getParent().requestDisallowInterceptTouchEvent(false);
-                    break;*/
+                    break;
                 case MotionEvent.ACTION_CANCEL:
                     Log.d("Adhithyan", "cancel");
                     onStopTrackingTouch();
                     setPressed(false);
                     this.getParent().requestDisallowInterceptTouchEvent(false);
-                    break;
+                    break;*/
             }
             return true;
         }
@@ -304,6 +300,12 @@ public class PrettySeekBar extends View{
         }
     }
 
+    private void onProgressChanged(PrettySeekBar prettySeekBar, int progress, boolean touched){
+        if(onPrettySeekBarChangeListener != null){
+            onPrettySeekBarChangeListener.onProgressChanged(this, progress, true);
+        }
+    }
+
     private void updateOnTouch(MotionEvent event){
         boolean ignoreTouch = ignoreTouch(event.getX(), event.getY());
         if(ignoreTouch){
@@ -312,6 +314,7 @@ public class PrettySeekBar extends View{
         setPressed(true);
 
         updateProgress(event.getX(), event.getY());
+
 
     }
 
@@ -335,13 +338,15 @@ public class PrettySeekBar extends View{
             if(xdiff <= 10 && ydiff <= 10) {
                 point = i;
                 currentProgress = i;
+                updateCurrentProgress(i);
                 if(!makeProgress.get())
                     makeProgress.set(true);
                 invalidate();
                 break;
-
             }
         }
+
+        pauseZoom = false;
     }
 
     private void setPointRange(int x, int y){
@@ -352,4 +357,12 @@ public class PrettySeekBar extends View{
         circleMinY = Math.min(y, circleMinY);
     }
 
+    private void updateCurrentProgress(int point){
+        //since progress starts from point 270, we are adjusting relative to it
+        int adjustToStart = (point <= 270) ? (point + 90) : (point - 270);
+        adjustToStart = (adjustToStart == 360) ? 0 : adjustToStart;
+        int actualProgress = (adjustToStart * makeProgressTime) / 1000;
+
+        onProgressChanged(this, actualProgress, true);
+    }
 }
