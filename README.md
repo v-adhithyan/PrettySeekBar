@@ -11,6 +11,8 @@ Beautiful circular seekbar library for android, inspired by analog clock. It can
 
 # Demo
 
+![sample screenshot](https://raw.githubusercontent.com/v-adhithyan/PrettySeekBar/master/screen-capture/screen-recording.gif)
+
 # Usage
 This library is currently available only via jitpack. To add this library to your project, do the following changes: <br>
 
