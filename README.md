@@ -47,11 +47,50 @@ xmlns:pretty="http://schemas.android.com/apk/res-auto"
 <com.avtechlabs.prettyseekbar.PrettySeekBar
      android:layout_width="match_parent"
      android:layout_height="match_parent"
-     pretty:outerCircleFillColor="replace with the color you want"
-     pretty:innerCircleFillColor="replace with the color you want"
+     pretty:outerCircleFillColor="replace with the color you want, default is black"
+     pretty:innerCircleFillColor="replace with the color you want, default is white"
 />
   ```
 Voila, PrettySeekBar is now added to your project.
+
+##Operations
+
+You can avail the following functions of PrettySeeBar activity java file.
+
+* Set maxProgress in seconds. (Default is 100)
+```
+prettySeekBar.setMaxProgress(seconds);
+```
+
+* The clock starts zooming in and out, once added to layout. To animate clock hand, call the following:
+```
+prettySeekBar.makeProgress();
+```
+
+* To pause moving clock hand, call:
+```
+prettySeekBar.pauseProgress();
+```
+
+* Implement an listener and override onProgressChanged method to get the current progress seeked by user.
+```
+prettySeekBar.setOnPrettySeekBarChangeListener(new PrettySeekBar.OnPrettySeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(PrettySeekBar prettySeekBar, int progress, boolean touched) {
+            //your logic
+        }
+
+        @Override
+        public void onStartTrackingTouch(PrettySeekBar seekBar) {
+		//currently the logic added here is not supported.
+        }
+
+        @Override
+        public void onStopTrackingTouch(PrettySeekBar seekBar) {
+		//currently the logic added here is not supported.
+        }
+});
+```
 
 # License
 
