@@ -41,21 +41,20 @@ dependencies{
 
 <b>Step 3:</b> Sync project with gradle files. <br>
 
-<b>Step 4:</b> In your layout file, add the following changes
-  Add the namespace to the layout's parent. For example if your layout's parent is RelativeLayout add the following line within that. <br>
+<b>Step 4:</b> In your layout file,add a xml namespace (<xmlns:pretty>) for the PrettySeekBar within the top parent. <br>
   ```
-    xmlns:pretty="http://schemas.android.com/apk/res-auto"
+xmlns:pretty="http://schemas.android.com/apk/res-auto"
   ```
   <br>
   
   Now add the following code:
   ```
-  <com.avtechlabs.prettyseekbar.PrettySeekBar
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        pretty:outerCircleFillColor="replace with the color you want"
-        pretty:innerCircleFillColor="replace with the color you want"
-  />
+<com.avtechlabs.prettyseekbar.PrettySeekBar
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     pretty:outerCircleFillColor="replace with the color you want"
+     pretty:innerCircleFillColor="replace with the color you want"
+/>
   ```
 Voila, PrettySeekBar is now added to your project.
 
