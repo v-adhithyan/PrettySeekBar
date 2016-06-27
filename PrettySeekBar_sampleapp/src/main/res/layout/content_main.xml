@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/prettySeekBar"
-        pretty:outerCircleFillColor="#000000"
+        pretty:outerCircleFillColor="@color/colorAccent"
         pretty:innerCircleFillColor="#FFFFFF"
         />
 
