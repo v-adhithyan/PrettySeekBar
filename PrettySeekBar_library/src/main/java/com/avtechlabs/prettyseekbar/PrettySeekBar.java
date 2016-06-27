@@ -134,6 +134,7 @@ public class PrettySeekBar extends View{
             outerCircleFillColor = array.getInteger(R.styleable.PrettySeekBar_outerCircleFillColor, R.color.outer);
             innerCircleFillColor = array.getInteger(R.styleable.PrettySeekBar_innerCircleFillColor, R.color.inner);
             maxProgress = array.getInteger(R.styleable.PrettySeekBar_maxProgress, 100);
+
         }finally {
             array.recycle();
         }
@@ -180,10 +181,10 @@ public class PrettySeekBar extends View{
             canvas.drawCircle(viewWidthHalf, viewHeightHalf, innerCircleRadius, innerCirclePainter);
 
             if(makeProgress.get() && !pause){
-                point = (point + 1 == 360) ? 0 : point + 1;
+                    point = (point + 1 == 360) ? 0 : point + 1;
                 makeProgress.set(false);
             }
-            canvas.drawLine(viewWidthHalf, viewHeightHalf, x[point], y[point], progressPainter);
+        canvas.drawLine(viewWidthHalf, viewHeightHalf, x[point], y[point], progressPainter);
 
 
             if(image != null) {
@@ -358,7 +359,7 @@ public class PrettySeekBar extends View{
     }
 
     private void updateCurrentProgress(int point){
-        //since progress starts from point 270, we are adjusting relative to it
+        //since clock starts animating from point 270, we are adjusting relative to it
         int adjustToStart = (point <= 270) ? (point + 90) : (point - 270);
         adjustToStart = (adjustToStart == 360) ? 0 : adjustToStart;
         int actualProgress = (adjustToStart * makeProgressTime) / 1000;

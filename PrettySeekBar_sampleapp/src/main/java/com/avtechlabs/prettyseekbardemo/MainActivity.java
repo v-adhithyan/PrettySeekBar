@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     int duration;
     boolean update, playing = false;
     Thread progressThread = null;
+    ProgressUpdater progressUpdater = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,9 +67,15 @@ public class MainActivity extends AppCompatActivity {
                 if(touched){
                     //Toast.makeText(getApplicationContext(), progress + "", Toast.LENGTH_LONG).show();
                     Log.d("Adhithyan", progress + "");
+                    player.pause();
+                    playing = false;
                     if(player != null)
                         player.seekTo(progress * 1000);
+
                     updateDuration(progress);
+                    progressUpdater.setLoopVariable(progress);
+                    playing = true;
+                    player.start();
                 }
 
             }
@@ -122,7 +129,8 @@ public class MainActivity extends AppCompatActivity {
             playing = true;
 
             if(progressThread == null){
-                progressThread = new Thread(new ProgressUpdater(player.getDuration()));
+                progressUpdater = new ProgressUpdater(player.getDuration());
+                progressThread = new Thread(progressUpdater);
                 progressThread.start();
             }
             prettySeekBar.makeProgress();
@@ -130,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void updateDuration(int durationInSeconds){
+    public void updateDuration(final int durationInSeconds){
         this.update = update;
 
         final int minutes = durationInSeconds / 60;
@@ -144,7 +152,9 @@ public class MainActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                  songDuration.setText(preMinutes + minutes + ":" + preSeconds + seconds);
+                    songDuration.setText(preMinutes + minutes + ":" + preSeconds + seconds);
+
+
 
                     if(duration == player.getDuration() / 1000){
                         fab.setImageResource(android.R.drawable.ic_media_play);
@@ -155,15 +165,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     class ProgressUpdater implements Runnable{
-        int duration;
-
+        int duration, i;
         public ProgressUpdater(int duration){
             this.duration = duration;
+            this.i = 0;
         }
 
         @Override
         public void run() {
-            for(int i=0; i<duration; i++){
+            for(; i<duration; i++){
 
                 try {
                     while(!playing)
@@ -177,6 +187,10 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             }
+        }
+
+        public void setLoopVariable(int i){
+            this.i = i;
         }
     }
 
