@@ -48,14 +48,14 @@ public class MainActivity extends AppCompatActivity {
         songDuration = (TextView)findViewById(R.id.textViewDuration);
         prettySeekBar = (PrettySeekBar)findViewById(R.id.prettySeekBar);
         player = MediaPlayer.create(this, R.raw.gangnam);
-        int sleepTime = prettySeekBar.setMaxProgress(player.getDuration() / 1000);
+        int sleepTime = prettySeekBar.setMaxProgress(600);
         //Toast.makeText(this, player.getDuration() / 1000 + " seconds total progress..", Toast.LENGTH_LONG).show();
         //Toast.makeText(this, sleepTime + " seconds before progress..", Toast.LENGTH_LONG).show();
 
         mediapath = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.gangnam);
         songMetaData = new MediaMetadataRetriever();
         songMetaData.setDataSource(this, mediapath);
-        songName.setText(songMetaData.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE));
+        songName.setText("PrettySeekBar Demo");
         albumArt = songMetaData.getEmbeddedPicture();
         Bitmap songImage = BitmapFactory.decodeByteArray(albumArt, 0, albumArt.length);
         //prettySeekBar.setImageResource(songImage);
