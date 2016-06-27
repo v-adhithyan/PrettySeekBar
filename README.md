@@ -11,7 +11,7 @@ Simple minimalistic circular seekbar library for android, inspired by analog clo
 
 # Demo
 
-![sample screenshot](https://raw.githubusercontent.com/v-adhithyan/PrettySeekBar/master/screen-capture/screen-recording.gif)
+![sample screenshot](https://raw.githubusercontent.com/v-adhithyan/PrettySeekBar/master/screen-capture/demo.gif)
 
 # Usage
 This library is currently available only via jitpack. To add this library to your project, do the following changes: <br>
