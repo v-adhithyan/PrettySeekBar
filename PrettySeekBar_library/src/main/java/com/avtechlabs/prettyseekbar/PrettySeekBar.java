@@ -39,7 +39,7 @@ public class PrettySeekBar extends View{
     private Bitmap image = null;
     AtomicBoolean makeProgress = new AtomicBoolean(false);
     int makeProgressTime = (int)(((double)maxProgress/(double)360) * 1000);
-    private int currentProgress;
+    private int currentProgress = 270;
 
     //variables to store points on the circle, assuming 360 points in circle.
     private int[] x;
@@ -105,10 +105,11 @@ public class PrettySeekBar extends View{
                         Thread.sleep(makeProgressTime);
 
 
-                        if(currentProgress < 360){
+                        if(currentProgress < 630){
                             if(!pause){
                                 makeProgress.set(true);
                                 currentProgress++;
+                                Log.d("Adhithyan", "cp:" + currentProgress);
                             }
 
                         }else{
@@ -224,7 +225,6 @@ public class PrettySeekBar extends View{
         this.maxProgress = maxProgress;
         double time = ((double)maxProgress / (double)360) * 1000;
 
-        currentProgress = 0;
         makeProgressTime = (int)time;
         return makeProgressTime;
     }
@@ -338,7 +338,6 @@ public class PrettySeekBar extends View{
             int ydiff = Math.abs((int)(y[i] - yPos));
             if(xdiff <= 10 && ydiff <= 10) {
                 point = i;
-                currentProgress = i;
                 updateCurrentProgress(i);
                 if(!makeProgress.get())
                     makeProgress.set(true);
@@ -364,6 +363,7 @@ public class PrettySeekBar extends View{
         adjustToStart = (adjustToStart == 360) ? 0 : adjustToStart;
         int actualProgress = (adjustToStart * makeProgressTime) / 1000;
 
+        currentProgress = 270 + adjustToStart;
         onProgressChanged(this, actualProgress, true);
     }
 }

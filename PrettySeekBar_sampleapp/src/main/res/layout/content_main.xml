@@ -20,7 +20,6 @@
         android:id="@+id/prettySeekBar"
         pretty:outerCircleFillColor="#000000"
         pretty:innerCircleFillColor="#FFFFFF"
-        pretty:clockwise="false"
         />
 
     <TextView
