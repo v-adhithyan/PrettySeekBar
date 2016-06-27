@@ -56,7 +56,7 @@ dependencies{
         pretty:outerCircleFillColor="replace with the color you want"
         pretty:innerCircleFillColor="replace with the color you want"
   />
-  ```<br>
+  ```
 Voila, PrettySeekBar is now added to your project.
 
 # License
