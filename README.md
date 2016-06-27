@@ -41,7 +41,7 @@ dependencies{
 xmlns:pretty="http://schemas.android.com/apk/res-auto"
   ```
   <br>
-  
+
   Now add the following code:
   ```
 <com.avtechlabs.prettyseekbar.PrettySeekBar
@@ -94,4 +94,4 @@ prettySeekBar.setOnPrettySeekBarChangeListener(new PrettySeekBar.OnPrettySeekBar
 
 # License
 
-This project is released under MIT license. See [license file]() for more info.
+This project is released under MIT license. See [license file](https://github.com/v-adhithyan/PrettySeekBar/blob/master/LICENSE.md) for more info.
