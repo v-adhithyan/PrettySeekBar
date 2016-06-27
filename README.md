@@ -9,12 +9,7 @@
 
 Beautiful circular seekbar library for android, inspired by analog clock. It can be used for stopwatches and audio players. Free and Open source.
 
-# Sample
-
-# Table of contents
-
-* [Usage](#usage)
-* [License](#license)
+# Demo
 
 # Usage
 This library is currently available only via jitpack. To add this library to your project, do the following changes: <br>
