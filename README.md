@@ -7,7 +7,7 @@
 
 
 
-Simple minimalistic circular seekbar library for android, inspired by analog clock. It can be used for stopwatches and audio players. Free and Open source.
+Simple, minimalistic circular seekbar library with animation for android, inspired from analog clock. It can be used for stopwatches and audio players. Free and Open source.
 
 # Demo
 
