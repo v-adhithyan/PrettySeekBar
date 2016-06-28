@@ -17,7 +17,7 @@ Simple minimalistic circular seekbar library for android, inspired by analog clo
 This library is currently available only via jitpack. To add this library to your project, do the following changes: <br>
 
 <b>Step 1:</b> Add it in your root build.gradle at the end of repositories.
-```
+```groovy
 allprojects {
 	 repositories {
 	   ...
@@ -28,7 +28,7 @@ allprojects {
 <br>
 
 <b>Step 2:</b> Add the dependency.
-```
+```groovy
 dependencies{
  ...
  compile 'com.github.v-adhithyan:PrettySeekBar:v1.0'
@@ -39,13 +39,13 @@ dependencies{
 <b>Step 3:</b> Sync project with gradle files. <br>
 
 <b>Step 4:</b> In your layout file,add a xml namespace (<xmlns:pretty>) for the PrettySeekBar within the top parent. <br>
-  ```
+  ```xml
 xmlns:pretty="http://schemas.android.com/apk/res-auto"
   ```
   <br>
 
   Now add the following code:
-  ```
+  ```xml
 <com.avtechlabs.prettyseekbar.PrettySeekBar
      android:layout_width="match_parent"
      android:layout_height="match_parent"
@@ -60,22 +60,22 @@ Voila, PrettySeekBar is now added to your project.
 You can avail the following functions of PrettySeeBar activity java file.
 
 * Set maxProgress in seconds. (Default is 100)
-```
+```java
 prettySeekBar.setMaxProgress(seconds);
 ```
 
 * The clock starts zooming in and out, once added to layout. To animate clock hand, call the following:
-```
+```java
 prettySeekBar.makeProgress();
 ```
 
 * To pause moving clock hand, call:
-```
+```java
 prettySeekBar.pauseProgress();
 ```
 
 * Implement an listener and override onProgressChanged method to get the current progress seeked by user.
-```
+```java
 prettySeekBar.setOnPrettySeekBarChangeListener(new PrettySeekBar.OnPrettySeekBarChangeListener() {
         @Override
         public void onProgressChanged(PrettySeekBar prettySeekBar, int progress, boolean touched) {
