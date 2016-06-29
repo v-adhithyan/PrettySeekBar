@@ -93,6 +93,8 @@ prettySeekBar.setOnPrettySeekBarChangeListener(new PrettySeekBar.OnPrettySeekBar
         }
 });
 ```
+# Author
+* Adhithyan V
 
 # License
 
